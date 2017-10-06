@@ -19,7 +19,7 @@ There are two python files - `main.py` and `surveygen.py`.
 
 `surveygen.py` is a module that contains an SM parser fuction and a `Survey` class that renders it. If launched separately, `surveygen.py` asks for a filename, searches the file in the current directory and processes it, if it's found.
 
-`main.py` is a script that searches through `./input` directory and its subfolders and processes each `.txt` file that it findы. The output results are then stored in `./output` directory with the same subfolder structure as in `./input`.
+`main.py` is a script that searches through `./input` directory and its subfolders and processes each `.txt` file that it finds. The output results are then stored in `./output` directory with the same subfolder structure as in `./input`.
 
 
 ## Requirements

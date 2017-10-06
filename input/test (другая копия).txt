@@ -1,0 +1,39 @@
+[AO_Solar_System] 
+<Name> <Date> <MAH MAN>
+
+#How many moons does Earth have now?
+	One
+	Two
+	Three | four
+#How long does it take for the Earth to orbit the Sun? 
+	One day
+	One week | One month | One year
+#Which planet in our \[Solar System\] is the largest?
+|Saturn|Earth|Jupiter|Mars|Uranus
+#What is the name of the \#Galaxy we live in?
+	Andromeda
+	Milky Way
+	Comet
+	Sunflower
+#How far away is the moon from Earth?
+	30,000 miles|4,567,900 miles|238,854 miles
+	857,832 miles
+*How many planets are in our Solar System?|7|8|9|10
+*Which of the following is no longer considered a planet?
+	Mars
+	Mercury
+	Pluto
+	Venus
+*          What is the main force that causes the planets to orbit?
+	Energy
+	Gravity
+	Wind
+	Orbital Force
+#What year was the first telescope invented?
+	1806|1910|1608|1760
+#Which of the following does the solar system revolve around?
+	Moon
+	Earth
+	Sun
+	Mars
+

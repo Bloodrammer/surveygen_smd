@@ -11,6 +11,7 @@ Provides a simple markup syntax for surveys and a renderer for it.
 - **\t** or **|** - answer
 - **\<text>** - text with a gap after it for the respondent to fill (e.g. name, date, signature etc.)
 - **\n** - newline
+
 It also supports escape sequences. Number of answers is limited to 26 per question (well, actually, it's not, but you would go past the alphabet).
 
 ## What does it do?

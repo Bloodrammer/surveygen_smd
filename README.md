@@ -27,5 +27,5 @@ The project requires `python3.5` and packages listed in `requirements.txt`.
 
 ## Some additional features that are coded but are not included in the pipeline
 - You can choose the alignment for the `paste_image()` function from `['left','center','right']`
-- If you would need separate blocks of questions (e.g. Part1 - questions 1-7, Part2 - questions 1-8 instead of questions 1-15), `question()` function has a `reset_count=False` parameter.
+- If you would need to separate blocks of questions (e.g. Part1 - questions 1-7, Part2 - questions 1-8 instead of questions 1-15), `question()` function has a `reset_count=False` parameter.
 - For debugging purposes, you can use the `draw_grid()` function, which draws a grid over the area within the margin.

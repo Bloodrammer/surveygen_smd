@@ -11,6 +11,18 @@ TNM_bold = './fonts/times-new-roman-bold.ttf'
 
 logger = logging.getLogger(__name__)
 
+# Constants
+#: standard DPI value in MS Word (allegedly)
+standard_dpi = 72
+#: number of underscores after text in field_with_gap() function
+number_of_underscores = 20
+#: correcting constant for encased letters in an answer
+letter_margin = 0.16
+#: correcting constant for checkboxes/radio boxes which prevents them from overlapping
+encasing_margin = 0.06
+#: number of whitespaces after a checkbox/radio box
+letter_offset = 3
+
 
 class Survey:
     """This class provides tools for creating surveys in PNG format, and can
@@ -33,7 +45,7 @@ class Survey:
         self.dpi = dpi
         self.inch_size = inch_size
         self.inch_margin = inch_margin
-        self.font_size = font_size * self.dpi // 72
+        self.font_size = font_size * self.dpi // standard_dpi
         self.font = ImageFont.truetype(
             font=TNM, size=self.font_size)
         self.bold_font = ImageFont.truetype(
@@ -47,7 +59,8 @@ class Survey:
         self.current_pos = [self.x_margin, self.y_margin]
 
         self.reserved_names = {
-            'AO_Solar_System': './images/solar.png'
+            'AO_Solar_System': './images/solar.png',
+            'Our_Solar_System': './images/solar.png'
         }
 
     def _draw_grid(self):
@@ -121,7 +134,7 @@ class Survey:
             except Exception as e:
                 print(e.message, e.args)
 
-        self._paste_image_by_var(pasted,alignment=alignment)
+        self._paste_image_by_var(pasted, alignment=alignment)
 
     def _paste_image_by_var(self, pasted, alignment='center'):
         """Function for debugging. Paste the input image onto the survey in the
@@ -155,7 +168,7 @@ class Survey:
         """
         self.draw.text(
             self.current_pos,
-            text + '_' * 20,
+            text + '_' * number_of_underscores,
             font=self.bold_font,
             fill=0)
         self.current_pos[0] = (self.survey.size[0] + self.current_pos[0]) / 2 if \
@@ -169,49 +182,38 @@ class Survey:
             self.current_pos[1] +
             self.font_size]
 
-    def draw_checkbox(self, i):
-        """Draw a checkbox with a capital letter within and offsets along
-        x-axis by 3*self.font_size.
+    def draw_encased_letter(self, i, multiple):
+        """Draw a checkbox/radio box with a capital letter within and offsets along
+        x-axis by letter_offset*self.font_size.
 
         :param i: letter number in the alphabet - 1
-
+        :param multiple: 'radio' or 'multiple'
         """
-        self.draw.rectangle(
-            [self.current_pos[0] + int(0.06 * self.font_size),
-             self.current_pos[1] + int(0.06 * self.font_size),
-             self.current_pos[0] + self.font_size - int(0.06 * self.font_size),
-             self.current_pos[1] + self.font_size - int(0.06 * self.font_size)],
-            outline=0)
+        if multiple == 'multiple':
+            self.draw.rectangle(
+            [self.current_pos[0] + int(encasing_margin * self.font_size),
+             self.current_pos[1] + int(encasing_margin * self.font_size),
+             self.current_pos[0] + self.font_size - int(encasing_margin * self.font_size),
+             self.current_pos[1] + self.font_size - int(encasing_margin * self.font_size)],
+             outline=0)
+        elif multiple == 'radio':
+            self.draw.ellipse(
+                [self.current_pos[0],
+                 self.current_pos[1],
+                 self.current_pos[0] + self.font_size,
+                 self.current_pos[1] + self.font_size],
+                outline=0)
+        else:
+            raise ValueError(
+                '\'multiple\' argument in function question() can only equal \'multiple\' and \'radio\'')
         self.draw.text(
-            [self.current_pos[0] + int(0.16 * self.font_size),
-             self.current_pos[1] - int(0.06 * self.font_size),
+            [self.current_pos[0] + int(letter_margin * self.font_size),
+             self.current_pos[1] - int(encasing_margin * self.font_size),
              self.current_pos[0] + self.font_size,
              self.current_pos[1] + self.font_size],
             chr(ord('A') + i),
             font=self.font, fill=0)
-        self.current_pos[0] += 3 * self.font_size
-
-    def draw_radiobox(self, i):
-        """Draw a radiobox with a capital letter within and offsets along
-        x-axis by 3*self.font_size.
-
-        :param i: letter number in the alphabet - 1
-
-        """
-        self.draw.ellipse(
-            [self.current_pos[0],
-             self.current_pos[1],
-             self.current_pos[0] + self.font_size,
-             self.current_pos[1] + self.font_size],
-            outline=0)
-        self.draw.text(
-            [self.current_pos[0] + int(0.16 * self.font_size),
-             self.current_pos[1] - int(0.06 * self.font_size),
-             self.current_pos[0] + self.font_size,
-             self.current_pos[1] + self.font_size],
-            chr(ord('A') + i),
-            font=self.font, fill=0)
-        self.current_pos[0] += 3 * self.font_size
+        self.current_pos[0] += letter_offset * self.font_size
 
     def question(self,
                  q,
@@ -242,13 +244,8 @@ class Survey:
         self.next_row()
         self.next_row()
         for i, ans in enumerate(answers):
-            if multiple == 'multiple':
-                self.draw_checkbox(i)
-            elif multiple == 'radio':
-                self.draw_radiobox(i)
-            else:
-                raise ValueError(
-                    '\'choice\' argument in function question() can only equal \'multiple\' and \'radio\'')
+            self.draw_encased_letter(i, multiple)
+
             self.draw.text(
                 self.current_pos,
                 "{}".format(ans),
@@ -268,7 +265,6 @@ class Survey:
         """
         logger.info('Rendering...')
         for i in sequence:
-            # print(i['text'],draw.multiline_textsize(i['text'],font=font))
             if i['type'] == 'newline':
                 self.next_row()
                 self.draw.text(

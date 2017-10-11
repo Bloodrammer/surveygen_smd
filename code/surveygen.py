@@ -2,92 +2,14 @@
 
 from PIL import Image, ImageDraw, ImageFont
 import logging
-import logging.config
-import warnings
-import traceback
+
 from datetime import datetime
-logger = logging.getLogger(__name__)
+
 
 TNM = './fonts/times-new-roman.ttf'
 TNM_bold = './fonts/times-new-roman-bold.ttf'
 
-def parse(filename):
-    """Parse the text file with SimpleMarkdown into a list of dictionaries.
-    Dictionary parameters: { 'type':
-    ['question','image','newline','gap']+temporary types 'answer' and 'closer',
-    'text': string,
-
-        [FOR TYPE 'question' ONLY]:
-        'answers': list of answers,
-        'choice': ['multiple','radio']
-    }
-    :param filename: filename in string format
-    :return: sequence: list of dictionaries
-
-    """
-    try:
-        logger.info('Trying to open "{}"'.format(filename))
-        with open(filename) as f:
-            a = f.read()
-    except Exception as e:
-        logger.error('Exception raised when trying to open "{}": {}'.format(
-            filename, e))
-        logging.error(traceback.format_exc())
-        return
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        logger.info('Trying to process "{}"'.format(filename))
-
-        special_symbols = "[]<>#*\n|\t"
-        sequence = []
-        current_type = None
-        questions = []
-        esc = False
-        types = {
-            '*#': 'question',
-            '[': 'image',
-            '\n': 'newline',
-            '|\t': 'answer',
-            '<': 'gap',
-            '>]': 'closer'
-        }
-        choice = {
-            '*': 'multiple',
-            '#': 'radio'
-        }
-
-        for i in a:
-            if i == "\\":
-                esc = True
-                continue
-            if i not in special_symbols:
-                if not sequence:
-                    sequence.append({'type': None, 'text': ''})
-                sequence[-1]['text'] = ''.join([sequence[-1]['text'], i])
-            if i in special_symbols:
-                if esc:
-                    sequence[-1]['text'] = ''.join([sequence[-1]['text'], i])
-                    esc = False
-                    continue
-                current_type = types[[x for x in types.keys() if i in x][0]]
-                sequence.append({'type': current_type, 'text': ''})
-                if current_type == 'question':
-                    sequence[-1]['choice'] = choice[i]
-                    questions.append({len(sequence) - 1: []})
-                if current_type == 'answer':
-                    questions[-1][max(questions[-1].keys())
-                                  ].append(len(sequence) - 1)
-        for i in reversed(questions):
-            sequence[max(i.keys())]['answers'] = [sequence[x]
-                                                  ['text'].strip() for x in list(i.values())[0]]
-
-        sequence = [sequence[x] for x in range(len(sequence)) if
-                    not (sequence[x]['type'] == 'newline'
-                         and sequence[(x + 1) % len(sequence)]['type'] == 'answer') and
-                    sequence[x]['type'] not in ['closer', 'answer']]
-        for i in sequence:
-            i['text'] = i['text'].strip()
-        return sequence
+logger = logging.getLogger(__name__)
 
 
 class Survey:
@@ -198,22 +120,10 @@ class Survey:
                     (resize[0] * pasted.size[0], resize[1] * pasted.size[1]))
             except Exception as e:
                 print(e.message, e.args)
-        align = {
-            'left': self.current_pos,
-            'center': (int((self.survey.size[0] - pasted.size[0]) / 2), self.current_pos[1]),
-            'right': (self.survey.size[0] - self.current_pos[0] - pasted.size[0], self.current_pos[1])
 
-        }
-        start = align[alignment]
+        self._paste_image_by_var(pasted,alignment=alignment)
 
-        self.survey.paste(pasted,
-                          box=(start[0], start[1],
-                               start[0] + pasted.size[0], start[1] + pasted.size[1])
-                          )
-        self.current_pos[1] += pasted.size[1] // self.font_size * \
-            self.font_size
-
-    def __paste_image_by_var(self, pasted, alignment='center'):
+    def _paste_image_by_var(self, pasted, alignment='center'):
         """Function for debugging. Paste the input image onto the survey in the
         current position.
 
@@ -356,6 +266,7 @@ class Survey:
         :param sequence: parsed SimpleMarkdown sequence.
 
         """
+        logger.info('Rendering...')
         for i in sequence:
             # print(i['text'],draw.multiline_textsize(i['text'],font=font))
             if i['type'] == 'newline':
@@ -377,6 +288,7 @@ class Survey:
                     i['text'],
                     font=self.font,
                     fill=0)
+        logger.info('Rendered successfully!')
 
     def save(self, output_folder='', filename=None):
         """Save the survey in the .PNG format.
@@ -395,20 +307,5 @@ class Survey:
         self.survey.save(name, 'PNG')
 
 
-def survey_pipeline(filename, output_folder=''):
-    """SimpleMarkdown rendering pipeline. Parses the input file, renders it on
-    an image and saves it in .PNG format.
-
-    :param filename: text file name
-    :param output_folder: output folder
-
-    """
-    sequence = parse(filename)
-    result = Survey()
-    result.render(sequence)
-    result.save(output_folder, filename)
-
-
 if __name__ == '__main__':
-    filename = str(input("Enter the filename:"))
-    survey_pipeline(filename)
+    print('You are not supposed to use this module as a standalone file')

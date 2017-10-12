@@ -86,5 +86,6 @@ def parse(filename):
         logger.info('Parsing finished successfully!')
         return sequence
 
+
 if __name__ == '__main__':
     print('You are not supposed to use this module as a standalone file, try using smdpipeline.py instead.')

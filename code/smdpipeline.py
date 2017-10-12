@@ -13,12 +13,13 @@ def survey_pipeline(filename, output_folder=''):
     :param output_folder: output folder
 
     """
-    logging.info(''.join(["=====",filename.split('/')[-1],'=====']))
+    logging.info(''.join(["=====", filename.split('/')[-1], '=====']))
     sequence = smdparser.parse(filename)
     result = surveygen.Survey()
     result.render(sequence)
     result.save(output_folder, filename)
     logging.info('Saved successfully!')
+
 
 if __name__ == '__main__':
     filename = str(input("Enter the filename:"))

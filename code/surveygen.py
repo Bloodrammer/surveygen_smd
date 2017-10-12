@@ -27,6 +27,7 @@ letter_offset = 3
 class Survey:
     """This class provides tools for creating surveys in PNG format, and can
     also work with parsed SimpleMarkdown sequences."""
+
     def __init__(
             self,
             dpi=300,
@@ -191,11 +192,12 @@ class Survey:
         """
         if multiple == 'multiple':
             self.draw.rectangle(
-            [self.current_pos[0] + int(encasing_margin * self.font_size),
-             self.current_pos[1] + int(encasing_margin * self.font_size),
-             self.current_pos[0] + self.font_size - int(encasing_margin * self.font_size),
-             self.current_pos[1] + self.font_size - int(encasing_margin * self.font_size)],
-             outline=0)
+                [self.current_pos[0] + int(encasing_margin * self.font_size),
+                 self.current_pos[1] + int(encasing_margin * self.font_size),
+                 self.current_pos[0] + self.font_size -
+                 int(encasing_margin * self.font_size),
+                 self.current_pos[1] + self.font_size - int(encasing_margin * self.font_size)],
+                outline=0)
         elif multiple == 'radio':
             self.draw.ellipse(
                 [self.current_pos[0],

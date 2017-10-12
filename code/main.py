@@ -25,16 +25,18 @@ if not os.path.exists(logs_folder):
 logger = logging.getLogger(__name__)
 fh = logging.handlers.RotatingFileHandler("".join([logs_folder,
                                                    '/',
-                                                   datetime.strftime(datetime.today(), "%m%d%Y_%H%M"),
-                                                  'debug.log']
+                                                   datetime.strftime(
+                                                       datetime.today(), "%m%d%Y_%H%M"),
+                                                   'debug.log']
                                                   ),
                                           maxBytes=1000000,
                                           backupCount=10)
 fh.setLevel(logging.DEBUG)
 fh2 = logging.handlers.RotatingFileHandler("".join([logs_folder,
                                                     '/',
-                                                    datetime.strftime(datetime.today(), "%m%d%Y_%H%M"),
-                                                   'info.log']
+                                                    datetime.strftime(
+                                                        datetime.today(), "%m%d%Y_%H%M"),
+                                                    'info.log']
                                                    ),
                                            maxBytes=1000000,
                                            backupCount=10)
@@ -42,8 +44,10 @@ fh2.setLevel(logging.INFO)
 
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(1)
-fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-fh2.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+fh.setFormatter(logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+fh2.setFormatter(logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 ch.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
 
 root = logging.getLogger()
@@ -70,6 +74,5 @@ for subfolder in os.listdir(input_folder):
         if not os.path.exists(output_subfolder_path):
             os.makedirs(output_subfolder_path)
         smdpipeline.survey_pipeline(txt_file, output_subfolder_path)
-execution_time = int((time.time() - start_time)*1000)
+execution_time = int((time.time() - start_time) * 1000)
 logger.info("Done! Execution time: {} milliseconds" .format(execution_time))
-

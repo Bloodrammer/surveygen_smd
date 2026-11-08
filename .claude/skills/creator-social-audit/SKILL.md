@@ -20,6 +20,15 @@ agents or bypass bot checks; use WebSearch snippets instead and say so):
 | IG / TikTok followers, ER, audience geo, fake % | HypeAuditor, Modash free checker, Favikon, the profile itself |
 | Cross-platform handles | Channel "About" links, IG bio / link-in-bio |
 
+Field notes (learned the hard way):
+- The YouTube **About** dialog ("…and N more links") gives the registered **country**, exact views,
+  video count, join date and all cross-platform links — read it before guessing nationality from dialect.
+- To get the Shorts vs long-form split, scroll the /shorts tab in a headless browser and sum the per-Short
+  view counts; compare with lifetime views. Check /videos and /streams tabs too.
+- YouTube rate-limits after ~100 page loads (redirect to google.com/sorry). Stop when that happens —
+  don't rotate user agents or otherwise evade it. Batch what you need into few requests.
+- Links on the channel can be dead (renamed second channels) — verify each one.
+
 Search in **the creator's language too** (e.g. Arabic name spellings: جود قيمر / جيمر).
 Similarly-named channels are common — verify every number belongs to the exact handle/channel ID.
 Label every fact **verified / inferred / uncertain** with its source URL.
